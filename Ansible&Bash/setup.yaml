@@ -1,0 +1,28 @@
+---
+- name: Setup nodes to create LXC container
+  hosts: servers #vm01, 02 en 03
+  become: yes
+
+  tasks:
+    - name: Update apt cache #updates uitvoeren
+      apt:
+        update_cache: yes
+
+    - name: check dns settings #DNS goed zetten wanneer nodig
+      ansible.builtin.lineinfile:
+        path: /etc/resolv.conf
+        line: nameserver 8.8.8.8
+
+    - name: Add pve-no-subscription repository to sources.list #PVE subscription goed zetten
+      ansible.builtin.lineinfile:
+        path: /etc/apt/sources.list
+        line: 'deb http://download.proxmox.com/debian/pve bullseye pve-no-subscription'
+      register: sources_list_change
+
+
+    - name: Comment out enterprise repository in pve-enterprise.list
+      ansible.builtin.replace:
+        path: /etc/apt/sources.list.d/pve-enterprise.list
+        regexp: '^(deb\s+https://enterprise\.proxmox\.com/debian/pve\s+.+)$'
+        replace: '# \1'
+      register: enterprise_list_change

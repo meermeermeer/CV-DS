@@ -1,0 +1,7 @@
+---
+
+- hosts: all
+  gather_facts: false
+  tasks:
+    - name: 8.8.8.8
+      ping:
