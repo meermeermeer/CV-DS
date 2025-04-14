@@ -1,0 +1,51 @@
+---
+  
+  hosts: ansible@10.24.17.61 #of .61 of .63 voor VM02 en 03
+  become: yes
+
+  tasks:
+    - name: Create IPVLAN Network
+      community.general.docker_network:
+        name: ipvlan_opdracht1
+        driver: ipvlan
+        driver_options: {"ipvlan_mode": "l3", "parent": "ens18"} #ens18 is netwerkkaart van man-vm
+        ipam_config:
+          - subnet: 10.0.100.0/24
+          - subnet: 10.0.101.0/24
+        state: present
+      register: create_network_result
+
+    - name: Run MariaDB container 1
+      community.general.docker_container:
+        name: mariadb-subnet1
+        image: mariadb:latest
+        env:
+          MYSQL_ROOT_PASSWORD: proxmox
+        ports:
+          - "3307:3306"
+        networks:
+          - name: ipvlan_opdracht1
+            ipv4_address: 10.0.100.2
+
+    - name: Run MariaDB container 2
+      community.general.docker_container:
+        name: mariadb-subnet2
+        image: mariadb:latest
+        env:
+          MYSQL_ROOT_PASSWORD: proxmox
+        ports:
+          - "3308:3306"
+        networks:
+          - name: ipvlan_opdracht1
+            ipv4_address: 10.0.101.2
+
+    - name: Run Busybox container
+      community.general.docker_container:
+        name: busybox
+        image: busybox
+        command: /bin/sh
+        interactive: yes
+        auto_remove: true
+        networks:
+          - name: container_opdracht2
+            ipv4_address: 192.168.101.3

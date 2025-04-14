@@ -1,0 +1,25 @@
+- name: maak docker compose met mariaDB database
+  hosts: docker
+  become: yes
+
+  tasks:
+    - name: Docker compose in yml-file
+      copy:
+        content: |
+          version: '3'
+          services:
+            mariadb:
+              image: mariadb:latest
+              container_name: mariadb
+              environment:
+                MYSQL_ROOT_PASSWORD: proxmox
+              volumes:
+                - mariadb-vol:/var/lib/mysql
+              ports:
+                - "3306:3306"
+          volumes:
+            mariadb-vol:
+        dest: docker-compose.yml
+
+    - name: Run Docker Compose
+      command: docker compose up -d

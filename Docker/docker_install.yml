@@ -1,0 +1,40 @@
+- name: Install Docker
+  hosts: docker
+  become: yes
+
+  tasks:
+    - name: Update the repositories
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: "yes"
+
+    - name: Install dependencies
+      ansible.builtin.apt:
+        name:
+          - ca-certificates
+          - curl
+          - gnupg
+
+    - name: Create directory with permissions
+      command: install -m 0755 -d /etc/apt/keyrings
+
+    - name: Download Docker GPG Key
+      shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+    - name: Change Permissions for Docker GPG Key
+      shell: chmod a+r /etc/apt/keyrings/docker.gpg
+
+    - name: Add Docker repository to Apt sources
+      shell: |
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+    - name: Install docker
+      ansible.builtin.apt:
+        update_cache: true
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin 
+          - docker-compose-plugin
+

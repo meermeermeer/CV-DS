@@ -1,0 +1,30 @@
+- name: Docker container maken mbv Dockerfile
+  hosts: docker
+  become: yes
+  
+  tasks:
+    - name: maak docker dir
+      file:
+        path: /home/ansible/docker
+        state: directory
+        recurse: yes  
+
+    - name: maak Dockerfile
+      copy:
+        content: |
+          # Example Dockerfile
+          FROM ubuntu:23.04
+          MAINTAINER ansible 
+          RUN apt-get update
+          CMD ["sh", "-c", "echo Test Test Test"]
+        dest: /home/ansible/docker/Dockerfile
+
+
+    - name: maak Docker image
+      shell: "docker build -t image7 /home/ansible/docker"
+
+    - name: run Docker container
+      community.general.docker_container:
+        name: lessen-7
+        image: image7
+        state: started
