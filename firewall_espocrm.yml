@@ -1,0 +1,62 @@
+---
+- name: Configure UFW Firewall on Ubuntu
+  hosts: espocrm #playbok voor EspoCRM VM's
+  become: yes  # Run the playbook with sudo privileges
+  tasks:
+    - name: Update apt cache #update
+      apt:
+        update_cache: yes
+
+    - name: Ensure UFW is installed #ufw firewall installeren
+      apt:
+        name: ufw
+        state: present
+        update_cache: yes
+
+    - name: Enable UFW #ufe aanzetten
+      ufw:
+        state: enabled
+
+    - name: Set UFW default to deny incoming traffic #inkomend verkeer blokkeren
+      ufw:
+        default: deny
+        direction: incoming
+
+    - name: Set UFW default to allow outgoing traffic #uitgaand verkeer aanzetten
+      ufw:
+        default: allow
+        direction: outgoing
+
+    - name: Allow SSH traffic #ssh verkeer toestaan
+      ufw:
+        rule: allow
+        port: 22
+        proto: tcp
+
+    - name: Allow HTTP traffic (port 80) #poort 80 openzetten
+      ufw:
+        rule: allow
+        port: 80
+        proto: tcp
+
+    - name: Allow HTTPS traffic (port 443) #port 443 aanzetten
+      ufw:
+        rule: allow
+        port: 443
+        proto: tcp
+
+    - name: Ensure UFW is enabled #ufw aanzetten (redundant)
+      ufw:
+        state: enabled
+
+    - name: Check UFW status (verbose) #status van ufw checken
+      command: ufw status verbose
+      register: ufw_status
+
+    - name: Display UFW status
+      debug:
+        msg: "{{ ufw_status.stdout }}"
+
+    - name: Print success message
+      debug:
+        msg: "Success"
