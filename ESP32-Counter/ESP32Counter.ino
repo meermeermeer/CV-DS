@@ -107,7 +107,7 @@ void loop() {
     request(); //roept de request functie aan, dit is de functie voor de HTTP POST   
 } 
 
-/* request vort de http POST naar de database uit.
+/* request voert de http POST naar de database uit.
    */
 void request() {
         //Controleren of er wifi verbinding is
@@ -202,22 +202,19 @@ bool capture_still() {
 
         current_frame[block_y][block_x] += pixel;
     }
-
-    // average pixels in block (rescale)
+    
+    // gemiddele pixel in block (rescale)
     for (int y = 0; y < H; y++)
         for (int x = 0; x < W; x++)
             current_frame[y][x] /= BLOCK_SIZE * BLOCK_SIZE;
 
     return true;
 }
-/* this function is used to determin the direction of the movement by dividing the direction matrix 
- * calculated in motion_detect() function into one right side matrix and one left side matrix,
- * the matrix with the higher frequency in "99" shows the direction from which the movement is coming 
- */
+
 
 //functie om de richting te bapalen
-bool direction_detection(uint16_t frame[H][W]){
-  // initialize the two direction matrices 
+bool direction_detection(uint16_t frame[H][W]){ 
+  // initialiseren van beide richtingen
   uint16_t direc_left[H][W] = { 0 };
   uint16_t direc_right[H][W] = { 0 };
   
@@ -244,11 +241,8 @@ bool direction_detection(uint16_t frame[H][W]){
 }
 
 
-/**
- * Compute the number of different blocks
- * If there are enough, then motion happened
- */
 
+// detecteren van beweging door het verschil te bepalen van het aantal blokken
 int motion_detect(){
     uint16_t changes = {0}; //kijken hoeveel blokken er zijn verandered
     const uint16_t blocks = (WIDTH * HEIGHT) / (BLOCK_SIZE * BLOCK_SIZE); //aantal blokken in de foto
