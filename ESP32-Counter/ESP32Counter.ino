@@ -257,7 +257,7 @@ int motion_detect(){
             float prev = prev_frame[y][x];
             float delta = abs(current - prev) / prev; //bereken delta
     
-            if (delta >= BLOCK_DIFF_THRESHOLD) { //als delta groter of gelijk is aan BLOCK_DIFF_THRESHOLD dan is er beweging gedetecteerd, nu moet 20% van de de huidige en vorige frame verschillen om beweging te detecteren 
+            if (delta >= BLOCK_DIFF_THRESHOLD) { //als delta groter of gelijk is aan BLOCK_DIFF_THRESHOLD (0.2) dan is er beweging gedetecteerd, nu moet 20% van de de huidige en vorige frame verschillen om beweging te detecteren 
                 changes += 1;   
                 direc[y][x] = {99} ;
  #endif               
