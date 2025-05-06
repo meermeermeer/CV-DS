@@ -19,8 +19,8 @@
 #define DEBUG 1
 
 /*Gegevens om met wifi te verbiden*/
-const char* ssid     = "MI 9 DVDM"; //SSID
-const char* password = "david2002"; //Wifi wachtwoord
+const char* ssid     = "SSID"; //SSID
+const char* password = "PASSWORD"; //Wifi wachtwoord
 
 const char* serverName = "http://esp32-counter.000webhostapp.com/post-esp-data.php"; //defineren van serverName, dit is de uiteindelijke eindwebsite
 
